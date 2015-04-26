@@ -1,0 +1,48 @@
+{
+  "name": "moplog",
+  "version": "0.1.0",
+  "description": "moplog is a generic processor of a MongoDB oplog, routing registered transactions to the specified consumer",
+  "main": "moplog.js",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pkalamegham/moplog"
+  },
+  "bugs": {
+    "url": "https://github.com/pkalamegham/moplog/issues"
+  },
+  "homepage": "https://github.com/pkalamegham/moplog",
+  "engines": {
+    "node": ">= 0.12.0"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-githooks": "^0.3.1",
+    "grunt-jscs": "^1.5.0",
+    "grunt-mocha-cov": "^0.3.0",
+    "grunt-open": "^0.2.3",
+    "grunt-debug-task": "^0.1.5",
+    "jscs": "^1.11.3"
+  },
+  "dependencies": {
+    "async": "^0.9.0",
+    "grunt": "^0.4.5",
+    "lodash": "^3.2.0",
+    "mongodb": "^2.0.27",
+    "nconf": "^0.7.1",
+    "restify": "^2.8.4",
+    "winston": "^0.8.3",
+    "winston-loggly": "^1.0.2"
+  },
+  "config": {
+    "blanket": {
+      "pattern": [
+        "app"
+      ]
+    }
+  }
+}
