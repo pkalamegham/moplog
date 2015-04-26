@@ -1,8 +1,8 @@
-# nodebase
+# moplog
 
 moplog is a generic processor of a MongoDB oplog, routing registered transactions to the specified consumer. To configure a new consumer, add a key/value to the collections map in config.json:
 
-```json
+```javascript
 {
     ...
     collections : {
