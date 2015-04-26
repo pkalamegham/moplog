@@ -2,7 +2,7 @@
   "name": "moplog",
   "version": "0.1.0",
   "description": "moplog is a generic processor of a MongoDB oplog, routing registered transactions to the specified consumer",
-  "main": "moplog.js",
+  "main": "app.js",
   "scripts": {
     "test": "grunt test"
   },

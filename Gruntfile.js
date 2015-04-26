@@ -106,10 +106,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-debug-task');
     grunt.loadNpmTasks('grunt-githooks');
 
-    grunt.registerTask('test', ['mochacov:test']);
+    grunt.registerTask('lint', ['jshint', 'jscs']);
+    grunt.registerTask('unit', ['mochacov:test']);
     grunt.registerTask('coverage', ['mochacov:coverage', 'open']);
-    grunt.registerTask('default', ['jshint', 'test', 'coverage']);
-    grunt.registerTask('code-style', ['jshint', 'jscs']);
+    grunt.registerTask('test', ['lint', 'unit']);
     grunt.registerTask('server', 'Start moplog web service', function () {
         grunt.log.writeln('Started web service on port 8080');
         var done = this.async();
