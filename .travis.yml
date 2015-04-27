@@ -1,5 +1,8 @@
 language: node_js
 node_js:
   - "0.12"
+services:
+  - mongodb
 install: npm install
-before_script: npm install -g grunt-cli
+before_script: 
+  - npm install -g grunt-cli

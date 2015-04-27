@@ -27,6 +27,7 @@ function convertTsToDate(ts) {
 }
 
 var Moplog = function (configFile, consumerDir) {
+    var self = this;
     // Load config using defaults as needed
     nconf.file(configFile);
     nconf.defaults({
@@ -41,18 +42,18 @@ var Moplog = function (configFile, consumerDir) {
         collections : {},
         period : 5000
     });
-    logger.info('Config', JSON.stringify(this.getConfig()));
+    logger.info('Config', JSON.stringify(self.getConfig()));
 
     // Load consumers
-    this.consumers = {};
+    self.consumers = {};
     var consumerNames = _.uniq(_.values(nconf.get('collections')));
-    _.each(consumerNames, _.bind(function (name) {
+    _.each(consumerNames, function (name) {
         logger.info('Loading consumer: ' + name);
-        this.consumers[name] = require(consumerDir + '/' + name);
-    }, this));
+        self.consumers[name] = require(consumerDir + '/' + name);
+    });
 
-    this.lastTs = convertDateToTs(nconf.get('lastTs') || 0);
-    this.connect();
+    self.lastTs = convertDateToTs(nconf.get('lastTs') || 0);
+    self.connect();
 };
 
 /**
@@ -61,10 +62,11 @@ var Moplog = function (configFile, consumerDir) {
  *  based on the period specified in the config file.
  */
 Moplog.prototype.processOplogStream = function () {
-    var tsQuery = this.lastTs ? { ts : { $gt : this.lastTs } } : {};
+    var self = this;
+    var tsQuery = self.lastTs ? { ts : { $gt : self.lastTs } } : {};
     var period = nconf.get('period');
     var collections = nconf.get('collections');
-    var mongoStream = this.oplogCol.find(
+    self.mongoStream = self.oplogCol.find(
         tsQuery,
         {
             tailable : true,
@@ -75,13 +77,13 @@ Moplog.prototype.processOplogStream = function () {
     ).stream();
 
 
-    mongoStream.on('data', _.bind(function (data) {
+    self.mongoStream.on('data', function (data) {
         if (data.op === 'n') {
             // skip noops
         } else {
-            this.lastTs = data.ts;
-            var date = convertTsToDate(this.lastTs);
-            var consumer = this.consumers[collections[data.ns]];
+            self.lastTs = data.ts;
+            var date = convertTsToDate(self.lastTs);
+            var consumer = self.consumers[collections[data.ns]];
 
             // check for consumer for collection and operation
             if (consumer && consumer[data.op]) {
@@ -109,18 +111,18 @@ Moplog.prototype.processOplogStream = function () {
             nconf.set('lastTs', date.getTime());
             saveConfig();
         }
-    }, this));
+    });
 
-    mongoStream.on('end', _.bind(function () {
+    self.mongoStream.on('end', function () {
         // Schedule next check
         logger.info('Scheduling next oplog retrieval from ' +
-            convertTsToDate(this.lastTs));
-        setTimeout(_.bind(function () {
-            this.processOplogStream();
-        }, this), period);
-    }, this));
+            convertTsToDate(self.lastTs));
+        setTimeout(function () {
+            self.processOplogStream();
+        }, period);
+    });
 
-    mongoStream.on('error', function (err) {
+    self.mongoStream.on('error', function (err) {
         if (err.message === 'No more documents in tailed cursor') {
             // normal behavior, don't log
         } else {
@@ -131,6 +133,7 @@ Moplog.prototype.processOplogStream = function () {
 };
 
 Moplog.prototype.connect = function connect () {
+    var self = this;
     var source = nconf.get('source');
     var dblink = (source.user && source.pass) ?
         source.user + ':' + source.pass + '@' + source.host + '/' + source.db :
@@ -138,23 +141,30 @@ Moplog.prototype.connect = function connect () {
 
     logger.info('Connecting to ' + dblink);
 
-    MongoClient.connect(dblink, _.bind(function (err, db) {
+    MongoClient.connect(dblink, function (err, db) {
         if (err) {
             logger.error('Error processing oplog: ', err);
+            return;
         }
 
-        process.on('exit', function () {
-            logger.info('Closing database connection');
-            db.close();
+        // External exit condition handling
+        _.each(['SIGTERM', 'SIGINT'], function (ev) {
+            process.on(ev, function () {
+                // before closing, pause the stream events to avoid exceptions
+                self.mongoStream.pause();
+                logger.info('Closing database connection');
+                db.close();
+                process.exit(0);
+            });
         });
 
-        logger.info('Tailing oplog from ' + convertTsToDate(this.lastTs));
+        logger.info('Tailing oplog from ' + convertTsToDate(self.lastTs));
 
-        this.oplogCol = db.collection(source.collection);
+        self.oplogCol = db.collection(source.collection);
 
         // Begin processing oplog, this automatically reschedules itself
-        this.processOplogStream();
-    }, this));
+        self.processOplogStream();
+    });
 };
 
 /**
