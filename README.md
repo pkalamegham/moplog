@@ -1,4 +1,4 @@
-# moplog
+# moplog [![Build Status](https://travis-ci.org/pkalamegham/moplog.svg?branch=master)](https://travis-ci.org/pkalamegham/moplog)
 
 moplog is a generic processor of a MongoDB oplog, routing registered transactions to the specified consumer. To configure a new consumer, add a key/value to the collections map in config.json:
 
