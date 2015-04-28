@@ -1,28 +1,62 @@
 # moplog [![Build Status](https://travis-ci.org/pkalamegham/moplog.svg?branch=master)](https://travis-ci.org/pkalamegham/moplog)
 
-moplog is a generic processor of a MongoDB oplog, routing registered transactions to the specified consumer. To configure a new consumer, add a key/value to the collections map in config.json:
+A generic processor of a MongoDB oplog, routing registered transactions to the specified consumer. It handles operations of type insert, update, delete, and command.
+
+## Usage
+
+```javascript
+var Moplog = require ('moplog');
+
+// Initialize with the location of the nconf config file to use and the 
+// directory to the consumers.
+var moplog = new Moplog('./config.json', './consumers');
+
+// Assuming that your config has valid MongoDB connection details as well as
+// valid consumers configured, this will kick off the processing.
+moplog.connect();
+```
+
+## Configuration
+
+Configure moplog through a configuration file which you pass in as the first argument.  Here is an example:
 
 ```javascript
 {
-    ...
-    collections : {
-        "myDatabase.myCollection" : "myConsumer"
+    "source": {
+        "host": "mongodb://localhost:27017",
+        "db": "local",
+        "collection": "oplog.$main",
+        "user": "",
+        "pass": ""
     },
-    ...
+    "collections": {
+        "myDatabase.myCollection": "myConsumer"
+    }, 
+    "period": 5000,
+    "lastTs": 1429559350001
 }
 ```
 
-New consumers should be added to the app/consumers subdirectory.  Refer to app/consumers/defaultConsumer as a reference.
+- `source` : MongoDB server with oplog to process 
+  - `host` : server hostname with mongodb:// prepended protocol
+  - `db` : database name containing the oplog
+  - `collection` : oplog collection name
+  - `user` : specify when server uses authentication, user must have access to oplog
+  - `pass` : specify when server uses authentication, user must have access to oplog
+- `collections` : map of database.collection to consumer to route operations to
+- `period` : how frequently to query for new oplog entries
+- `lastTs` : timestamp of last processed oplog document with ms resolution. This is updated after each additional document is processed.
 
-## Running
-To run the moplog processor, start the Restify service which will in turn kick off MongoDB oplog processing based on the config and consumers:
+New consumers should be added to the app/consumers subdirectory.  Refer to test/consumers/testConsumer as a reference of how to implement.
 
-> grunt server
+## API
 
-## APIs
+### Moplog(configFile, consumerDir)
 
-### GET /config
-Returns the active configuration. Example response payload:
+Constructor which takes two arguments to specify the config file and the base directory of the consumers.  Return a moplog instance.
+
+### Moplog.getConfig()
+Returns the active configuration. Example response:
 
 ```javascript
 {
@@ -41,9 +75,9 @@ Returns the active configuration. Example response payload:
 }
 ```
 
-### GET /lag
+### Moplog.getLag()
 
-Returns the estimated lag in minutes of processed records based on timestamp of last processed operation.  Example response payload:
+Returns the estimated lag in minutes of processed records based on timestamp of last processed operation.  Example response:
 
 ```javascript
 {
@@ -64,4 +98,3 @@ To determine unit test coverage, run the coverage grunt task.  An HTML output wi
 
 > grunt coverage
 
-TODO: Add unit test that don't require a MongoDB instance running.
