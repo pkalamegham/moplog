@@ -25,11 +25,13 @@ module.exports = function (grunt) {
                 quotmark : 'single',
                 maxlen : 80,
                 globals : {
-                    module : true,
-                    restify : true,
-                    require : true,
                     assert : true,
+                    console : true,
+                    module : true,
+                    path : true,
                     process : true,
+                    require : true,
+                    restify : true,
                     setTimeout : true,
                     /* Mocha */
                     describe : true,
@@ -37,17 +39,21 @@ module.exports = function (grunt) {
                     before : true,
                     beforeEach : true,
                     after : true,
-                    afterEach : true
+                    afterEach : true,
+                    /* Unit test globals */
+                    insertTestResult : true,
+                    updateTestResult : true,
+                    deleteTestResult : true,
+                    commandTestResult : true
                 }
           },
           gruntfile : {
               src : 'Gruntfile.js'
           },
-          lib_test : {
+          lib : {
               src : ['lib/**/*.js', 'test/**/*.js']
           },
-          dev : ['Gruntfile.js', 'test/**/*.js'],
-          app : ['app/**/*.js']
+          dev : ['Gruntfile.js', 'test/**/*.js']
         },
         jscs : {
             src : '**/*.js',
@@ -70,7 +76,7 @@ module.exports = function (grunt) {
                 globals : ['expect'],
                 timeout : 3000,
                 ui : 'bdd',
-                require : ['restify', 'assert']
+                require : ['assert']
             },
             test : {
                 options : {
@@ -83,7 +89,7 @@ module.exports = function (grunt) {
                     output : 'coverage.html'
                 }
             },
-            all : ['test/**/*.js']
+            all : ['test/test*.js']
         },
         open : {
             file : {

@@ -1,0 +1,14 @@
+{
+  "source": {
+    "host": "mongodb://localhost:27017",
+    "db": "local",
+    "collection": "oplog.$main",
+    "user": "",
+    "pass": ""
+  },
+  "collections": {
+    "test.content": "testConsumer"
+  },
+  "period": 5000,
+  "lastTs": 1429559350001
+}
