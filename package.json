@@ -5,7 +5,7 @@
   "author": "Praveen Kalamegham <praveen@kalamegh.am>",
   "main": "lib/moplog.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt travis"
   },
   "repository": {
     "type": "git",
@@ -20,13 +20,12 @@
   },
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-jshint": "^0.11.2",
     "grunt-githooks": "^0.3.1",
-    "grunt-jscs": "^1.5.0",
-    "grunt-mocha-cov": "^0.3.0",
-    "grunt-open": "^0.2.3",
-    "grunt-debug-task": "^0.1.5",
-    "jscs": "^1.11.3"
+    "grunt-jscs": "^1.8.0",
+    "grunt-mocha-cov": "^0.4.0",
+    "mocha-lcov-reporter": "0.0.2",
+    "mocha-term-cov-reporter": "^0.2.0"
   },
   "dependencies": {
     "grunt": "^0.4.5",
@@ -39,7 +38,11 @@
   "config": {
     "blanket": {
       "pattern": [
-        "app"
+        "lib"
+      ],
+      "data-cover-never": [
+        "node_modules",
+        "test"
       ]
     }
   }

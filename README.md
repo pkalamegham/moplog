@@ -1,4 +1,4 @@
-# moplog [![Build Status](https://travis-ci.org/pkalamegham/moplog.svg?branch=master)](https://travis-ci.org/pkalamegham/moplog)
+# moplog [![Build Status](https://travis-ci.org/pkalamegham/moplog.svg?branch=master)](https://travis-ci.org/pkalamegham/moplog) [![Coverage Status](https://coveralls.io/repos/pkalamegham/moplog/badge.svg?branch=master)](https://coveralls.io/r/pkalamegham/moplog?branch=master)
 
 A generic processor of a MongoDB oplog, routing registered transactions to the specified consumer. It handles operations of type insert, update, delete, and command.
 

@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         // Task configuration.
         githooks : {
           all : {
-              'pre-commit' : 'code-style'
+              'pre-commit' : 'lint'
           }
         },
         jshint : {
@@ -61,64 +61,41 @@ module.exports = function (grunt) {
                 config : '.jscsrc'
             }
         },
-        watch : {
-            gruntfile : {
-            files : '<%= jshint.gruntfile.src %>',
-            tasks : ['jshint:gruntfile']
-            },
-            lib_test : {
-                files : '<%= jshint.lib_test.src %>',
-                tasks : ['jshint:lib_test']
-            }
-        },
         mochacov : {
-            options : {
-                globals : ['expect'],
-                timeout : 3000,
-                ui : 'bdd',
-                require : ['assert']
-            },
-            test : {
+            unit : {
                 options : {
                     reporter : 'spec'
                 }
             },
             coverage : {
                 options : {
-                    reporter : 'html-cov',
-                    output : 'coverage.html'
+                    reporter : 'mocha-term-cov-reporter',
+                    coverage : true
                 }
             },
-            all : ['test/test*.js']
-        },
-        open : {
-            file : {
-                path : './coverage.html'
-            }
-        },
-        debug : {
+            coveralls : {
+                options : {
+                    reporter : 'mocha-lcov-reporter',
+                    coveralls : true
+                }
+            },
             options : {
-                open : true
+                files : ['test/test*.js'],
+                ui : 'bdd',
+                colors : true
             }
         }
     });
 
     // These plugins provide necessary tasks.
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-jscs');
     grunt.loadNpmTasks('grunt-mocha-cov');
-    grunt.loadNpmTasks('grunt-open');
-    grunt.loadNpmTasks('grunt-debug-task');
     grunt.loadNpmTasks('grunt-githooks');
 
     grunt.registerTask('lint', ['jshint', 'jscs']);
-    grunt.registerTask('unit', ['mochacov:test']);
-    grunt.registerTask('coverage', ['mochacov:coverage', 'open']);
-    grunt.registerTask('test', ['lint', 'unit']);
-    grunt.registerTask('server', 'Start moplog web service', function () {
-        grunt.log.writeln('Started web service on port 8080');
-        var done = this.async();
-        require('./app/app').listen(8080).on('close', done);
-    });
+    grunt.registerTask('unit', ['mochacov:unit']);
+    grunt.registerTask('cov', ['mochacov:coverage']);
+    grunt.registerTask('test', ['lint', 'unit', 'cov']);
+    grunt.registerTask('travis', ['test', 'mochacov:coveralls']);
 };
