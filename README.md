@@ -88,6 +88,14 @@ Returns the estimated lag in minutes of processed records based on timestamp of 
 }
 ```
 
+## Logging
+
+Moplog logs to a rolling log stored in the process' root directory as moplog.dat.  It also supports Loggly by setting the following environment variables:
+- LOGGLY_SUBDOMAIN
+- LOGGLY_AUTH
+- LOGGLY_INPUT_NAME
+- LOGGLY_INPUT_TOKEN
+
 ## Testing
 All linting are configured in Gruntfile.js using both jshint and jscs.
 
