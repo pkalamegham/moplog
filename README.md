@@ -55,6 +55,9 @@ New consumers should be added to the app/consumers subdirectory.  Refer to test/
 
 Constructor which takes two arguments to specify the config file and the base directory of the consumers.  Return a moplog instance.
 
+### Moplog.connect()
+Connects to the MongoDB referenced in the config, obtains a handle on the oplog collection, and kicks off processing.
+
 ### Moplog.getConfig()
 Returns the active configuration. Example response:
 
@@ -94,7 +97,7 @@ All mocha unit tests are included in the test/ directory.  These are run through
 
 > grunt unit
 
-To determine unit test coverage, run the coverage grunt task.  An HTML output will give percentages and highlight lines not covered by any test:
+To determine unit test coverage, run the cov grunt task.  A terminal friendly coverage output will give percentages and highlight lines not covered by any test:
 
-> grunt coverage
+> grunt cov
 
