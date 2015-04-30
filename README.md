@@ -38,16 +38,16 @@ Configure moplog through a configuration file which you pass in as the first arg
 ```
 
 - `source` : MongoDB server with oplog to process 
-  - `host` : server hostname with mongodb:// prepended protocol
-  - `db` : database name containing the oplog
-  - `collection` : oplog collection name
-  - `user` : specify when server uses authentication, user must have access to oplog
-  - `pass` : specify when server uses authentication, user must have access to oplog
-- `collections` : map of database.collection to consumer to route operations to
-- `period` : how frequently to query for new oplog entries
-- `lastTs` : timestamp of last processed oplog document with ms resolution. This is updated after each additional document is processed.
+  - `host` : server hostname with mongodb:// prepended protocol (default: `"mongodb://localhost:27017"`)
+  - `db` : database name containing the oplog (default: `"local"`)
+  - `collection` : oplog collection name (default: `"oplog.$main"`)
+  - `user` : specify when server uses authentication, user must have access to oplog (default: `""`, i.e., no authentication)
+  - `pass` : specify when server uses authentication, user must have access to oplog (default: `""`, i.e., no authentication)
+- `collections` : map of database.collection to consumer to route operations to (default: `{}`, i.e., no consumers)
+- `period` : how frequently to query for new oplog entries (defaults: `5000`, i.e., 5 seconds)
+- `lastTs` : timestamp of last processed oplog document with ms resolution. This is updated after each additional document is processed. (default: `0`, i.e., from the earliest operation available)
 
-New consumers should be added to the app/consumers subdirectory.  Refer to test/consumers/testConsumer as a reference of how to implement.
+New consumers should be added to the `app/consumers` subdirectory.  Refer to `test/consumers/testConsumer` as a reference of how to implement.
 
 ## API
 
