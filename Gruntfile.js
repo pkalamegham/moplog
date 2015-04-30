@@ -97,5 +97,5 @@ module.exports = function (grunt) {
     grunt.registerTask('unit', ['mochacov:unit']);
     grunt.registerTask('cov', ['mochacov:coverage']);
     grunt.registerTask('test', ['lint', 'unit', 'cov']);
-    grunt.registerTask('travis', ['test', 'mochacov:coveralls']);
+    grunt.registerTask('travis', ['test']);
 };
