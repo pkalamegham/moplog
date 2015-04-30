@@ -60,6 +60,19 @@ describe('Moplog constructor:', function () {
         });
     });
 
+    describe('Incorrect initialization', function () {
+        it('should throw if no config file is specified', function () {
+            assert.throws(function () {
+                new Moplog(null, 'foo');
+            });
+        });
+
+        it('should throw if no consumer dir is specified', function () {
+            assert.throws(function () {
+                new Moplog('./configDoesNotExist.json');
+            });
+        });
+    });
 });
 
 describe('Moplog stream functions:', function () {
